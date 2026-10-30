@@ -1,0 +1,21 @@
+stages:
+  preprocess:
+    cmd: python -m backend.app.services.dicom_processor --input data/raw_dicom_samples --output data/processed
+    deps:
+      - backend/app/services/dicom_processor.py
+      - data/raw_dicom_samples
+    params:
+      - preprocess.image_size_2d
+      - preprocess.volume_size_3d
+      - preprocess.hu_min
+      - preprocess.hu_max
+    outs:
+      - data/processed
+  evaluate:
+    cmd: python -m backend.app.scripts.evaluate_models --data data/processed --output metrics/eval_results.json
+    deps:
+      - backend/app/scripts/evaluate_models.py
+      - data/processed
+    metrics:
+      - metrics/eval_results.json:
+          cache: false
