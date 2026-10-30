@@ -1,0 +1,46 @@
+services:
+  orthanc:
+    image: orthancteam/orthanc:24.10.2
+    container_name: medai-orthanc
+    ports:
+      - "4242:4242"
+      - "8042:8042"
+    volumes:
+      - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
+      - orthanc_storage:/var/lib/orthanc/db
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: medai-backend
+    environment:
+      - ORTHANC_URL=http://orthanc:8042
+      - DATABASE_URL=sqlite:///./medai_audit.db
+      - ARTIFACT_DIR=/app/artifacts_store
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - backend_artifacts:/app/artifacts_store
+    depends_on:
+      - orthanc
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: medai-frontend
+    environment:
+      - VITE_API_BASE=http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  orthanc_storage:
+  backend_artifacts:
