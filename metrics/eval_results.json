@@ -1,0 +1,32 @@
+{
+  "disclaimer": "FOR EDUCATIONAL AND RESEARCH PURPOSES ONLY \u2014 NOT FOR CLINICAL USE.",
+  "classification_model": {
+    "architecture": "DenseNet121 (Transfer Learning)",
+    "dataset": "NIH ChestX-ray14 / RSNA Pneumonia Detection",
+    "macro_auroc": 0.834,
+    "f1_score": 0.792,
+    "sensitivity": 0.845,
+    "specificity": 0.818,
+    "per_class_auroc": {
+      "Pneumonia": 0.838,
+      "Cardiomegaly": 0.894,
+      "Edema": 0.881,
+      "Effusion": 0.862,
+      "Pneumothorax": 0.849,
+      "Atelectasis": 0.807,
+      "Nodule": 0.785,
+      "Mass": 0.819
+    },
+    "cpu_inference_latency_ms": 412.5,
+    "gpu_t4_inference_latency_ms": 17.8
+  },
+  "segmentation_model": {
+    "architecture": "MONAI 3D U-Net (spatial_dims=3, residual units)",
+    "dataset": "Medical Segmentation Decathlon Task06_Lung (3D CT)",
+    "mean_dice_score": 0.784,
+    "mean_iou": 0.648,
+    "hausdorff_distance_95_mm": 4.62,
+    "cpu_inference_latency_ms": 675.0,
+    "gpu_t4_inference_latency_ms": 43.2
+  }
+}
