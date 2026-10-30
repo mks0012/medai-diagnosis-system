@@ -1,0 +1,50 @@
+{
+  "pipeline_stage": "step1_and_step2_dicom_preprocessed",
+  "hipaa_safe_harbor_anonymized": true,
+  "target_size_2d": [
+    224,
+    224
+  ],
+  "target_size_3d": [
+    96,
+    96,
+    96
+  ],
+  "hu_window": [
+    -1000.0,
+    400.0
+  ],
+  "studies_processed": 3,
+  "studies": {
+    "CXR_RSNA_Pneumonia_001": {
+      "scan_png": "data/processed/CXR_RSNA_Pneumonia_001_scan.png",
+      "cam_png": "data/processed/CXR_RSNA_Pneumonia_001_gradcam.png",
+      "patient_id": "PT-RSNA-0041",
+      "modality": "DX",
+      "view": "PA",
+      "study_uid": "1.2.840.113619.2.55.3.101",
+      "label": "Pneumonia",
+      "confidence": 0.914
+    },
+    "CXR_NIH_Cardiomegaly_002": {
+      "scan_png": "data/processed/CXR_NIH_Cardiomegaly_002_scan.png",
+      "cam_png": "data/processed/CXR_NIH_Cardiomegaly_002_gradcam.png",
+      "patient_id": "PT-NIH-0089",
+      "modality": "DX",
+      "view": "AP",
+      "study_uid": "1.2.840.113619.2.55.3.102",
+      "label": "Cardiomegaly",
+      "confidence": 0.876
+    },
+    "CT_MSD_LungNodule_003": {
+      "scan_png": "data/processed/CT_MSD_LungNodule_003_scan.png",
+      "cam_png": "data/processed/CT_MSD_LungNodule_003_gradcam.png",
+      "patient_id": "PT-MSD-0114",
+      "modality": "CT",
+      "view": "AXIAL",
+      "study_uid": "1.2.840.113619.2.55.3.103",
+      "label": "Nodule",
+      "confidence": 0.942
+    }
+  }
+}
