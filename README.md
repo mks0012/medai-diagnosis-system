@@ -1,6 +1,6 @@
 # AI-Assisted Medical Imaging and Diagnosis System
 
-> **IMPORTANT NOTICE**: **FOR EDUCATIONAL AND RESEARCH PURPOSES ONLY — NOT FOR CLINICAL USE.**
+
 
 An end-to-end medical imaging AI platform where X-ray, CT, or MRI DICOM scans are uploaded or pulled from an **Orthanc DICOM Server**, analyzed by deep learning models (**DenseNet121** 2D classifier and **MONAI 3D U-Net** volumetric segmenter), visualized with **Grad-CAM** explanation heatmaps, and reviewed by a radiologist (**Approve / Reject**) with an immutable **SHA-256 hash-chained audit log**.
 
