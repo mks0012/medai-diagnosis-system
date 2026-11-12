@@ -1,9 +1,5 @@
 # Individual Intern Reflection — AI / Machine Learning Specialization Track
 
-- **Intern Name**: [Enter Your Name]
-- **Project**: AI-Assisted Medical Imaging and Diagnosis System
-- **Timeline**: 20 October 2026 – 20 November 2026
-
 ## 1. What I Owned End-to-End
 - Designed and built the full-stack medical imaging pipeline integrating **Orthanc DICOM Server**, **PyTorch/MONAI** (`DenseNet121` & `3D U-Net`), **Grad-CAM** explainability, **DVC** data versioning, **FastAPI**, and the **React** radiologist viewer.
 - Implemented the tamper-evident **SHA-256 hash-chained radiologist audit log** and containerized the 3-service deployment using **Docker Compose**.

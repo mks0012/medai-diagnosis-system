@@ -1,7 +1,5 @@
 # System Architecture & REST API Documentation
 
-> **FOR EDUCATIONAL AND RESEARCH PURPOSES ONLY — NOT FOR CLINICAL USE.**
-
 ## 1. End-to-End Architecture
 1. **Orthanc DICOM Server (`:4242` / `:8042`)**: Receives DICOM instances (`C-STORE` or HTTP upload) and exposes `/changes` and `/instances/{id}/file`.
 2. **FastAPI + PyTorch/MONAI Service (`:8000`)**:

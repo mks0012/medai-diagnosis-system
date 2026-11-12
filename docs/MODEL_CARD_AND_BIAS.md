@@ -1,6 +1,5 @@
 # Model Card: Limitations, Clinical Bias Analysis & Regulatory Notice
 
-> **REGULATORY NOTICE**: **FOR EDUCATIONAL AND RESEARCH PURPOSES ONLY — NOT FOR CLINICAL USE.**
 
 ## 1. Model Architectures & Datasets
 - **2D Classification**: `DenseNet121` trained via transfer learning on NIH ChestX-ray14 / RSNA Pneumonia Detection (Macro AUROC `0.834`).
