@@ -8,6 +8,11 @@ services:
     volumes:
       - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
       - orthanc_storage:/var/lib/orthanc/db
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q 1F6A /proc/net/tcp || exit 0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   backend:
@@ -17,7 +22,7 @@ services:
     container_name: medai-backend
     environment:
       - ORTHANC_URL=http://orthanc:8042
-      - DATABASE_URL=sqlite:///./medai_audit.db
+      - DATABASE_URL=sqlite:////app/artifacts_store/medai_audit.db
       - ARTIFACT_DIR=/app/artifacts_store
     ports:
       - "8000:8000"
@@ -26,6 +31,11 @@ services:
       - backend_artifacts:/app/artifacts_store
     depends_on:
       - orthanc
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   frontend:

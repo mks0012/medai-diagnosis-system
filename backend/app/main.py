@@ -1,6 +1,6 @@
 """
 FastAPI Service for AI-Assisted Medical Imaging & Diagnosis System.
-Automatically seeds the 3 sample DICOM studies on first startup so the React UI is populated immediately.
+Uses non-blocking threadpool inference (`process_dicom_bytes_async`) and exposes dead-letter diagnostics.
 """
 import asyncio
 from contextlib import asynccontextmanager
@@ -37,7 +37,6 @@ worker = OrthancPollingWorker(ORTHANC_URL, SessionLocal, preprocessor, engine, e
 
 
 def seed_initial_studies():
-    """Seeds the 3 sample DICOM files on first launch so the React viewer has studies ready immediately."""
     sample_dir = Path("data/raw_dicom_samples")
     if not sample_dir.exists():
         return
@@ -50,8 +49,8 @@ def seed_initial_studies():
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    seed_initial_studies()
-    task = asyncio.create_task(worker.poll_forever(interval_seconds=5))
+    await asyncio.to_thread(seed_initial_studies)
+    task = asyncio.create_task(worker.poll_forever(base_interval=4.0))
     yield
     task.cancel()
 
@@ -85,6 +84,9 @@ def health_check():
         "status": "healthy",
         "disclaimer": CLINICAL_NOTICE,
         "models_loaded": ["DenseNet121-2D", "MONAI-3D-UNet"],
+        "orthanc_last_seq": worker.last_seq,
+        "dead_letter_count": len(worker.dead_letter_instances),
+        "dead_letter_instances": worker.dead_letter_instances,
     }
 
 
@@ -93,9 +95,11 @@ async def upload_dicom_study(file: UploadFile = File(...)):
     raw_bytes = await file.read()
     instance_id = f"UPLOAD-{file.filename}-{int(datetime.now(timezone.utc).timestamp() * 1000)}"
     try:
-        record = worker.process_dicom_bytes(instance_id, raw_bytes)
+        record = await worker.process_dicom_bytes_async(instance_id, raw_bytes)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     except Exception as exc:
-        raise HTTPException(status_code=400, detail=f"Invalid DICOM file: {exc}") from exc
+        raise HTTPException(status_code=400, detail=f"Invalid or corrupted DICOM file: {exc}") from exc
     return _serialize_study(record)
 
 
@@ -172,11 +176,16 @@ def submit_radiologist_review(study_id: int, payload: ReviewRequest):
             "timestamp_utc": now_iso,
             "disclaimer": CLINICAL_NOTICE,
         }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database transaction failed: {exc}") from exc
     finally:
         db.close()
 
 
-@app.get("/api/v1/audit-logs")
+app.get("/api/v1/audit-logs")
 def list_audit_logs():
     db = SessionLocal()
     try:

@@ -25,12 +25,10 @@ export default function App() {
       const list = stData.studies || [];
       setStudies(list);
       setAuditLogs(logData.audit_logs || []);
-      if (!selectedStudy && list.length > 0) {
-        setSelectedStudy(list[0]);
-      } else if (selectedStudy) {
-        const updated = list.find((s) => s.id === selectedStudy.id);
-        if (updated) setSelectedStudy(updated);
-      }
+      setSelectedStudy((prev) => {
+        if (!prev) return list[0] || null;
+        return list.find((s) => s.id === prev.id) || list[0] || null;
+      });
     } catch (err) {
       console.error("Waiting for backend API...", err);
     }
@@ -57,8 +55,12 @@ export default function App() {
       await fetchAll();
       setSelectedStudy(created);
       setToast(`Uploaded and analyzed ${file.name} (${created.predicted_label})`);
+    } else {
+      const errData = await resp.json().catch(() => ({}));
+      setToast(`Upload rejected: ${errData.detail || "Invalid DICOM file"}`);
     }
     setUploading(false);
+    e.target.value = "";
   };
 
   const handleDecision = async (decision) => {
