@@ -6,7 +6,9 @@
    - Polls Orthanc `/changes` via `OrthancPollingWorker`.
    - Scrubs PHI tags (`DicomPreprocessor`), applies Hounsfield Unit windowing (`[-1000, 400]` HU), and normalizes intensities.
    - Runs `DenseNet121` (2D 14-class thoracic classification) and `MONAI 3D U-Net` (volumetric segmentation).
-   - Generates `Grad-CAM` spatial attribution heatmaps and stores PNG artifacts + predictions in SQLite (`medai_audit.db`).
+   - Generates `Grad-CAM` spatial attribution heatmaps and stores PNG agit add -A
+git commit -m "docs: update documentation files"
+git push origin mainrtifacts + predictions in SQLite (`medai_audit.db`).
 3. **React Radiology Workstation (`:3000`)**:
    - Displays the DICOM worklist, interactive scan viewer with Grad-CAM opacity slider, confidence scores, and Approve/Reject sign-off controls backed by an immutable SHA-256 hash-chained audit table.
 
